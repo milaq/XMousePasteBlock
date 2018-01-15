@@ -1,19 +1,42 @@
+TARGET = xmousepasteblock
+
+INSTALL = install
+PREFIX = /usr
+BINDIR = $(PREFIX)/bin
+
+CC = gcc
+CFLAGS += -std=gnu99
+CFLAGS += -Wall -Wundef -Wshadow -Wformat-security
+
+LD = $(CC)
 LDFLAGS += $(shell pkg-config --libs x11 xi)
 LDFLAGS += -lev
 
-XMousePasteBlock : xmousepasteblock.c
-	gcc $(CFLAGS) $(LDFLAGS) xmousepasteblock.c -o xmousepasteblock
+.NOTPARALLEL:
 
-prefix=/usr/local
+.PHONY: all
+all: clean $(TARGET)
 
-debug:
-	$(MAKE) xmousepasteblock "CFLAGS=-g -DDEBUG"
+.PHONY: debug
+debug: clean
+debug: CFLAGS += -g -DDEBUG
+debug: $(TARGET)
 
-clean:
-	rm xmousepasteblock
+.PHONY: $(TARGET)
+$(TARGET): $(TARGET).o
+	$(LD) "$<" $(LDFLAGS) -o "$(TARGET)"
 
-install:
-	install -m 0755 xmousepasteblock $(prefix)/bin
+$(TARGET).o: $(TARGET).c
+	$(CC) $(CFLAGS) -o "$@" -c "$<"
 
+.PHONY: install
+install: $(TARGET)
+	$(INSTALL) -Dm 0755 "$(TARGET)" "$(DESTDIR)$(BINDIR)/$(TARGET)"
+
+.PHONY: uninstall
 uninstall:
-	rm $(prefix)/bin/xmousepasteblock
+	$(RM) "$(DESTDIR)$(BINDIR)/$(TARGET)"
+
+.PHONY: clean
+clean:
+	$(RM) $(TARGET) $(TARGET).o
