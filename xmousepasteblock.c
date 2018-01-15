@@ -31,8 +31,7 @@
 static Display *display;
 static struct ev_io *x_watcher;
 static struct ev_check *x_check;
-
-int xi_opcode = -1;
+static int xi_opcode = -1;
 
 void errormsg(char *msg) {
     printf("ERROR: %s\n", msg);
@@ -54,7 +53,7 @@ void init_xinput(void) {
     }
 }
 
-static void init_eventmask(void) {
+void init_eventmask(void) {
     XIEventMask masks[1];
     unsigned char mask[(XI_LASTEVENT + 7)/8];
 
@@ -69,7 +68,7 @@ static void init_eventmask(void) {
     XFlush(display);
 }
 
-int clear_primary(void) {
+void clear_primary(void) {
     XSetSelectionOwner(display, XA_PRIMARY, None, CurrentTime);
     XSync(display, False);
 #ifdef DEBUG
@@ -77,11 +76,11 @@ int clear_primary(void) {
 #endif
 }
 
-static void stub_cb(EV_P_ ev_io *w, int revents) {
+void stub_cb(EV_P_ ev_io *w, int revents) {
     /* STUB */
 }
 
-static void check_cb(EV_P_ ev_check *w, int revents) {
+void check_cb(EV_P_ ev_check *w, int revents) {
     XEvent ev;
     while (XPending(display) > 0) {
         XNextEvent(display, &ev);
@@ -102,7 +101,7 @@ static void check_cb(EV_P_ ev_check *w, int revents) {
     }
 }
 
-int main(int argc, char** argv) {
+int main(int argc, const char* argv[]) {
     struct ev_loop *evloop;
 
     display = XOpenDisplay(NULL);
