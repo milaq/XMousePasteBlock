@@ -8,6 +8,15 @@ No need to disable your precious middle mouse button bindings, no clearing of vi
 With the utilization of XInput and Xlibs this has _no_ measurable impact on performance whatsoever.
 No elevated privileges required. Just run within your regular users' X session.
 
+## Dependencies
+
+You might need to install the `libev`, `libx11` and `libxi` (X11 Input Extension) headers.
+
+On Debian derivatives:
+````
+sudo apt-get install libev-dev libx11-dev libxi-dev
+````
+
 ## Building
 ````
 make
