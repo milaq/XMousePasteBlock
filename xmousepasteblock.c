@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Micha LaQua <micha.laqua@gmail.com>
+ * Copyright (c) 2021 Micha LaQua <micha.laqua@gmail.com>
  *
  * Special thanks to Ingo Buerk (Airblader) for his work on the
  * awesome unclutter-xfixes project, upon which the XInput eventcode
@@ -33,23 +33,21 @@ static struct ev_io *x_watcher;
 static struct ev_check *x_check;
 static int xi_opcode = -1;
 
-void errormsg(char *msg) {
-    printf("ERROR: %s\n", msg);
-    exit(1);
-}
-
 void init_xinput(void) {
     int event, error;
     if (!XQueryExtension(display, "XInputExtension", &xi_opcode, &event, &error)) {
-        errormsg("XInput extension not available");
+        printf("Error: XInput extension not available\n");
+        exit(1);
     }
 
     int major_op = 2, minor_op = 2;
     int result = XIQueryVersion(display, &major_op, &minor_op);
     if (result == BadRequest) {
-        errormsg("XI2 is not supported in a sufficient version (>=2.2 required).");
+        printf("Error: XI2 is not supported in a sufficient version (>=2.2 required).\n");
+        exit(1);
     } else if (result != Success) {
-        errormsg("Failed to query XI2");
+        printf("Error: Failed to query XI2\n");
+        exit(1);
     }
 }
 
@@ -72,7 +70,7 @@ void clear_primary(void) {
     XSetSelectionOwner(display, XA_PRIMARY, None, CurrentTime);
     XSync(display, False);
 #ifdef DEBUG
-    printf("primary selection cleared\n");
+    printf("DEBUG: Primary selection cleared\n");
 #endif
 }
 
@@ -91,7 +89,7 @@ void check_cb(EV_P_ ev_check *w, int revents) {
 
         const XIRawEvent *data = (const XIRawEvent *) cookie->data;
 #ifdef DEBUG
-        printf("button %i pressed\n", data->detail);
+        printf("DEBUG: Button %i pressed\n", data->detail);
 #endif
         if (data->detail == 2) {
             clear_primary();
@@ -106,7 +104,7 @@ int main(int argc, const char* argv[]) {
 
     display = XOpenDisplay(NULL);
     if (display == NULL) {
-        errormsg("Failed to connect to the X server");
+        printf("Error: Failed to connect to the X server\n");
         return 1;
     }
 
@@ -123,6 +121,7 @@ int main(int argc, const char* argv[]) {
     ev_check_init(x_check, check_cb);
     ev_check_start(evloop, x_check);
 
+    printf("Initialisation complete - Blocking new mouse paste actions\n");
     ev_run(evloop, 0);
 
     return 0;
