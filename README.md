@@ -12,15 +12,15 @@ No elevated privileges required. Just run within your regular users' X session.
 
 You might need to install the libev, Xlib and X11 Input extension headers.
 E.g. on Debian and derivatives:
-````
+```
 sudo apt-get install libev-dev libx11-dev libxi-dev
-````
+```
 
 Build the project:
-````
+```
 make
 sudo make install
-````
+```
 
 ## Running
 Just add `xmousepasteblock` to your startup script/config.
@@ -35,4 +35,6 @@ You can observe the behavior by building with the DEBUG flag set (`make debug`),
 This is due to the fact that the XI_RawButtonPress event only gets fired _after_ releasing the middle mouse button (in case the user wanted to execute a scroll action).
 The only option to work around this is to disable the middle mouse button hold-to-scroll functionality on Trackpoint devices (which is often not desirable).
 To do so (using _libinput_):
-`xinput set-prop <device id> 'libinput Button Scrolling Button' 0`
+```
+xinput set-prop <device id> 'libinput Button Scrolling Button' 0
+```
