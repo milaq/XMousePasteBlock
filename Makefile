@@ -1,7 +1,7 @@
 TARGET = xmousepasteblock
 
 INSTALL = install
-PREFIX = /usr
+PREFIX ?= /usr
 BINDIR = $(PREFIX)/bin
 RM = rm -f
 
@@ -31,19 +31,15 @@ LDFLAGS += -lev
 .NOTPARALLEL:
 
 .PHONY: all
-all: clean $(TARGET)
+all: $(TARGET)
 
 .PHONY: debug
 debug: clean
 debug: CFLAGS += -g -DDEBUG
 debug: $(TARGET)
 
-.PHONY: $(TARGET)
 $(TARGET): $(TARGET).o
-	$(LD) "$<" $(LDFLAGS) -o "$(TARGET)"
-
-$(TARGET).o: $(TARGET).c
-	$(CC) $(CFLAGS) -o "$@" -c "$<"
+	$(LD) "$<" $(LDFLAGS) -o "$@"
 
 .PHONY: install
 install: $(TARGET)
