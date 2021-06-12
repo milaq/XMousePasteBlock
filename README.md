@@ -22,6 +22,13 @@ make
 sudo make install
 ```
 
+<details>
+<summary>Note for OpenBSD users (click to expand)</summary>
+Before running <code>make</code>, please uncomment the respective comments
+inside the <code>Makefile</code><br>
+<br>
+</details>
+
 ## Running
 Just add `xmousepasteblock` to your startup script/config.
 
