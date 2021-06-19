@@ -66,11 +66,17 @@ void init_eventmask(void) {
     XFlush(display);
 }
 
-void clear_primary(void) {
+void clear(void) {
+    /* Clear primary selection */
     XSetSelectionOwner(display, XA_PRIMARY, None, CurrentTime);
+
+    /* Also clear deprecated cut buffer */
+    XStoreBytes(display, None, 0);
+    XSetSelectionOwner(display, XA_STRING, None, CurrentTime);
+
     XSync(display, False);
 #ifdef DEBUG
-    printf("DEBUG: Primary selection cleared\n");
+    printf("DEBUG: Primary selection and cut buffer cleared\n");
 #endif
 }
 
@@ -92,7 +98,7 @@ void check_cb(EV_P_ ev_check *w, int revents) {
         printf("DEBUG: Button %i pressed\n", data->detail);
 #endif
         if (data->detail == 2) {
-            clear_primary();
+            clear();
         }
 
         XFreeEventData(display, cookie);
