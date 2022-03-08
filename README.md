@@ -16,6 +16,11 @@ E.g. on Debian and derivatives:
 sudo apt-get install libev-dev libx11-dev libxi-dev
 ```
 
+Building with docker:
+```
+DOCKER_BUILDKIT=1 docker build --target export --output type=local,dest=. .
+```
+
 Build the project:
 ```
 make
