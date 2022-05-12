@@ -56,11 +56,11 @@ void init_eventmask(void) {
     unsigned char mask[(XI_LASTEVENT + 7)/8];
 
     memset(mask, 0, sizeof(mask));
-    masks[0].deviceid = XIAllMasterDevices;
+    masks[0].deviceid = XIAllDevices;
     masks[0].mask_len = sizeof(mask);
     masks[0].mask = mask;
 
-    XISetMask(mask, XI_RawButtonPress);
+    XISetMask(mask, XI_ButtonPress);
 
     XISelectEvents(display, DefaultRootWindow(display), masks, 1);
     XFlush(display);
