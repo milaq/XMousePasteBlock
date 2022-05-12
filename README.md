@@ -8,15 +8,28 @@ No need to disable your precious middle mouse button bindings, no clearing of vi
 With the utilization of XInput and Xlibs this has _no_ measurable impact on performance whatsoever.
 No elevated privileges required. Just run within your regular users' X session.
 
-## Building
+## Installation
+
+On Arch Linux you may simply use the [AUR package](https://aur.archlinux.org/packages/xmousepasteblock-git).
+
+For all other distros, please follow the instructions below.
+
+### Dependencies
 
 You might need to install the libev, Xlib and X11 Input extension headers.
-E.g. on Debian and derivatives:
+
+Debian and derivatives (e.g. Ubuntu):
 ```
 sudo apt-get install libev-dev libx11-dev libxi-dev
 ```
+Fedora:
+```
+sudo dnf install libev-devel libX11-devel libXi-devel
+```
 
-Build the project:
+### Building
+
+Compile and install:
 ```
 make
 sudo make install
