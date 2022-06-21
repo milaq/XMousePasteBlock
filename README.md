@@ -43,12 +43,24 @@ inside the <code>Makefile</code><br>
 </details>
 
 ## Running
+
 Just add `xmousepasteblock` to your startup script/config.
 
-Note: If you're using any kind of clipboard manager, make sure your it does not prevent clearing the PRIMARY selection.
-E.g. "Klipper" does that by default with the option "Prevent empty clipboard".
+Note: If you're using any kind of clipboard manager, make sure it does not prevent clearing the PRIMARY selection. By default, Klipper (KDE's stock clipboard manager) *does* prevent this type of clearing. Klipper users, look below for additional instructions.
+
+### KDE Plasma 5.25 and above
+
+In `~/.config/klipperrc` (Klipper's config file), add the following line:
+```
+NoEmptyClipboard=false
+```
+
+### KDE Plasma 5.24 and below
+
+Within Klipper's settings, make sure to disable `Prevent empty clipboard`.
 
 ## Known issues
+
 In case of devices which are configured with middle mouse button hold-to-scroll (e.g. Trackpoints), it may happen that the primary selection clear action gets fired too late on older and slower machines.
 You can observe the behavior by building with the DEBUG flag set (`make debug`), running `xmousepasteblock` in a shell and watching the debug output as you long press and hold the mouse buttons.
 
