@@ -14,9 +14,35 @@ On Arch Linux you may simply use the [AUR package](https://aur.archlinux.org/pac
 
 For all other distros, please follow the instructions below.
 
+### Clone the repository
+
+Clone the repository in whichever way you prefer. For example:
+```
+git clone https://github.com/milaq/XMousePasteBlock.git
+```
+
 ### Dependencies
 
-You might need to install the libev, Xlib and X11 Input extension headers.
+You will need the `make` and `gcc` libraries to build this repository. You can install them, plus several other "essential" libraries, with the `build-essential` library. Otherwise you can install them individually.
+
+Debian and derivatives (e.g. Ubuntu):
+```
+sudo apt-get install build-essential
+```
+or
+```
+sudo apt-get install make gcc
+```
+Fedora:
+```
+sudo dnf install build-essential
+```
+or
+```
+sudo dnf install make gcc
+```
+
+You might need to install the libev, Xlib and X11 Input extension headers. 
 
 Debian and derivatives (e.g. Ubuntu):
 ```
@@ -29,7 +55,7 @@ sudo dnf install libev-devel libX11-devel libXi-devel
 
 ### Building
 
-Compile and install:
+Compile and install (from the directory in which you cloned the repository):
 ```
 make
 sudo make install
