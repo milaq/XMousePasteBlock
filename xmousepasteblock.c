@@ -32,6 +32,7 @@ static Display *display;
 static struct ev_io *x_watcher;
 static struct ev_check *x_check;
 static int xi_opcode = -1;
+static int watch_slave_devices = 0;
 
 void init_xinput(void) {
     int event, error;
@@ -53,14 +54,18 @@ void init_xinput(void) {
 
 void init_eventmask(void) {
     XIEventMask masks[1];
-    unsigned char mask[(XI_LASTEVENT + 7)/8];
 
-    memset(mask, 0, sizeof(mask));
-    masks[0].deviceid = XIAllDevices;
-    masks[0].mask_len = sizeof(mask);
-    masks[0].mask = mask;
-
-    XISetMask(mask, XI_ButtonPress);
+    unsigned char mask_master[(XI_LASTEVENT + 7)/8];
+    memset(mask_master, 0, sizeof(mask_master));
+    masks[0].mask_len = sizeof(mask_master);
+    masks[0].mask = mask_master;
+    if (watch_slave_devices) {
+        masks[0].deviceid = XIAllDevices;
+        XISetMask(mask_master, XI_ButtonPress);
+    } else {
+        masks[0].deviceid = XIAllMasterDevices;
+        XISetMask(mask_master, XI_RawButtonPress);
+    }
 
     XISelectEvents(display, DefaultRootWindow(display), masks, 1);
     XFlush(display);
@@ -90,12 +95,15 @@ void check_cb(EV_P_ ev_check *w, int revents) {
         XNextEvent(display, &ev);
         XGenericEventCookie *cookie = &ev.xcookie;
         if (cookie->type != GenericEvent || cookie->extension !=  xi_opcode || !XGetEventData(display, cookie)) {
+#ifdef DEBUG
+            printf("DEBUG: Dropping event of type %i", cookie->type);
+#endif
             continue;
         }
 
         const XIRawEvent *data = (const XIRawEvent *) cookie->data;
 #ifdef DEBUG
-        printf("DEBUG: Button %i pressed\n", data->detail);
+        printf("DEBUG: Registered button press %i on device %i (source device %i)\n", data->detail, data->deviceid, data->sourceid);
 #endif
         if (data->detail == 2) {
             clear();
@@ -114,6 +122,16 @@ int main(int argc, const char* argv[]) {
         return 1;
     }
 
+    char* watch_slave_devices_env = getenv("XMPB_WATCH_SLAVE_DEVICES");
+    if (watch_slave_devices_env) {
+        for (char *c = watch_slave_devices_env; *c; ++c) {
+           *c = *c > 0x40 && *c < 0x5b ? *c | 0x60 : *c;
+        }
+        if (strcmp(watch_slave_devices_env, "1") == 0 || strcmp(watch_slave_devices_env, "true") == 0) {
+            watch_slave_devices = 1;
+        }
+    }
+
     init_xinput();
     init_eventmask();
 
@@ -127,7 +145,8 @@ int main(int argc, const char* argv[]) {
     ev_check_init(x_check, check_cb);
     ev_check_start(evloop, x_check);
 
-    printf("Initialisation complete - Blocking new mouse paste actions\n");
+    printf("Initialisation complete, blocking new mouse paste actions from all %s devices\n", watch_slave_devices ? "slave" : "master");
+
     ev_run(evloop, 0);
 
     return 0;

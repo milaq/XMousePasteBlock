@@ -66,6 +66,22 @@ NoEmptyClipboard=false
 
 Within Klipper's settings, make sure to disable `Prevent empty clipboard`.
 
+## Configuration
+
+### Mouse button remap handling
+
+If you happen to remap the middle mouse button `2` (e.g. with `xinput set-button-map 10 1 3 2 4 5 6 7 8 9`) we need to watch all XInput slave devices instead of all XInput master devices in order for XmousePasteBlock to catch the correct remapped button.
+
+To tell XmousePasteBlock to watch all XInput slave devices, set the following environment variable:
+```
+XMPB_WATCH_SLAVE_DEVICES=1
+```
+
+#### Why aren't we doing this by default?
+
+Some users reported issues when using slave device reporting (which was the default in version 1.3 only).
+Since version 1.4 the default is to watch master devices again (as with version <= 1.2) and make the slave device reporting configurable for those users who remap their mouse buttons.
+
 ## Debugging
 
 In case you're having problems and _before_ opening an issue, please compile with
@@ -80,6 +96,8 @@ and execute the resulting binary
 You should now see debug messages when pressing mouse buttons. This helps tremendously in pinning down your specific issue.
 
 ## Known issues
+
+### Trackpoint scrolling
 
 In case of devices which are configured with middle mouse button hold-to-scroll (e.g. Trackpoints), it may happen that the primary selection clear action gets fired too late on older and slower machines.
 You can observe the behavior by building with the DEBUG flag set (`make debug`), running `xmousepasteblock` in a shell and watching the debug output as you long press and hold the mouse buttons.
