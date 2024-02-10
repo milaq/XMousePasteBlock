@@ -51,7 +51,7 @@ inside the <code>Makefile</code><br>
 
 ## Running
 
-Just add `xmousepasteblock` to your startup script/config.
+Just add `xmousepasteblock` to your startup script/config or use the included systemd user service.
 
 Note: If you're using any kind of clipboard manager, make sure it does not prevent clearing the PRIMARY selection. By default, Klipper (KDE's stock clipboard manager) *does* prevent this type of clearing. Klipper users, look below for additional instructions.
 

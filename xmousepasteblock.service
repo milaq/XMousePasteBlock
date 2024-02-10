@@ -1,0 +1,12 @@
+[Unit]
+Description=XmousePasteBlock - Userspace tool to disable middle mouse button paste in Xorg
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/xmousepasteblock
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=graphical-session.target
