@@ -14,7 +14,7 @@ On Arch Linux you may simply use the [AUR package](https://aur.archlinux.org/pac
 
 For all other distros, please follow the instructions below.
 
-### Clone the repository
+### Acquiring the sourcecode
 
 Clone the repository in whichever way you prefer. For example:
 ```
@@ -23,34 +23,15 @@ git clone https://github.com/milaq/XMousePasteBlock.git
 
 ### Dependencies
 
-You will need the `make` and `gcc` libraries to build this repository. You can install them, plus several other "essential" libraries, with the `build-essential` library. Otherwise you can install them individually.
+You will need to install the libev, Xlib and X11 Input extension headers in addition to `make`, `gcc` and `pkg-config` to build this repository. You can install them, plus several other "essential" libraries, with the `build-essential` library. Otherwise you can install them individually.
 
 Debian and derivatives (e.g. Ubuntu):
 ```
-sudo apt-get install build-essential
-```
-or
-```
-sudo apt-get install make gcc
+sudo apt-get install make gcc pkg-config libev-dev libx11-dev libxi-dev
 ```
 Fedora:
 ```
-sudo dnf install build-essential
-```
-or
-```
-sudo dnf install make gcc
-```
-
-You might need to install the libev, Xlib and X11 Input extension headers. 
-
-Debian and derivatives (e.g. Ubuntu):
-```
-sudo apt-get install libev-dev libx11-dev libxi-dev
-```
-Fedora:
-```
-sudo dnf install libev-devel libX11-devel libXi-devel
+sudo dnf install make gcc pkgconfig libev-devel libX11-devel libXi-devel
 ```
 
 ### Building
@@ -85,14 +66,26 @@ NoEmptyClipboard=false
 
 Within Klipper's settings, make sure to disable `Prevent empty clipboard`.
 
+## Debugging
+
+In case you're having problems and _before_ opening an issue, please compile with
+```
+make debug
+```
+and execute the resulting binary
+```
+./xmousepasteblock
+```
+
+You should now see debug messages when pressing mouse buttons. This helps tremendously in pinning down your specific issue.
+
 ## Known issues
 
 In case of devices which are configured with middle mouse button hold-to-scroll (e.g. Trackpoints), it may happen that the primary selection clear action gets fired too late on older and slower machines.
 You can observe the behavior by building with the DEBUG flag set (`make debug`), running `xmousepasteblock` in a shell and watching the debug output as you long press and hold the mouse buttons.
 
 This is due to the fact that the XI_RawButtonPress event only gets fired _after_ releasing the middle mouse button (in case the user wanted to execute a scroll action).
-The only option to work around this is to disable the middle mouse button hold-to-scroll functionality on Trackpoint devices (which is often not desirable).
-To do so (using _libinput_):
+The only option to work around this is to disable the middle mouse button hold-to-scroll functionality on Trackpoint devices (which is often not desirable):
 ```
 xinput set-prop <device id> 'libinput Button Scrolling Button' 0
 ```
